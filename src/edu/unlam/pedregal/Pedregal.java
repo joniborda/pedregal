@@ -12,6 +12,7 @@ public class Pedregal {
 		Scanner scEntrada = new Scanner(entrada);
 		Scanner scSalida = new Scanner(salida);
 
+		Pedregal.porCordenadas(new File(path + "pedregal.in"), new File(path + "pedregal.out"));
 		if (scSalida.next().equals("NO")) {
 			System.out.println("NO PUEDE IDENTIFICAR SI ES CORRECTO");
 			scEntrada.close();
@@ -52,21 +53,64 @@ public class Pedregal {
 						return;
 					}
 				}
+				// SI LA CASA SE VA DEL TERRENO
+				if (inferiorX + i > dimensionX || inferiorY + j > dimensionY) {
+					System.out.println("SALIDA INCORRECTA");
+					return;
+				}
 			}
 		}
 
-		// SI LA CASA SE VA DEL TERRENO
-		for (int i = 0; i < casa.length; i++) {
-			String[] valores = casa[i].split(" ");
-			int x = Integer.valueOf(valores[0]);
-			int y = Integer.valueOf(valores[1]);
-			if (x > dimensionX || y > dimensionY) {
-				System.out.println("SALIDA INCORRECTA");
-				return;
-			}
-
-		}
 		System.out.println("SALIDA CORRECTA");
+		scEntrada.close();
+		scSalida.close();
+	}
+
+	private static void porCordenadas(File entrada, File salida) throws FileNotFoundException {
+		Scanner scEntrada = new Scanner(entrada);
+		Scanner scSalida = new Scanner(salida);
+
+		if (scSalida.next().equals("NO")) {
+			System.out.println("NO PUEDE IDENTIFICAR SI ES CORRECTO");
+			scEntrada.close();
+			scSalida.close();
+			return;
+		}
+
+		int dimensionX = scEntrada.nextInt();
+		int dimensionY = scEntrada.nextInt();
+		int frente = scEntrada.nextInt();
+		int fondo = scEntrada.nextInt();
+		int cantidadPedregales = scEntrada.nextInt();
+		scEntrada.nextLine();// LEE UNA LINEA EN BLANCO Y NO SE
+
+		int inferiorX = scSalida.nextInt();
+		int inferiorY = scSalida.nextInt();
+		char orientacion = scSalida.next().charAt(0);
+
+		if (!(orientacion == 'N' || orientacion == 'S')) {
+			int aux = frente;
+			frente = fondo;
+			fondo = aux;
+		}
+
+		int pedregalX = 0;
+		int pedregalY = 0;
+		for (int i = 0; i < cantidadPedregales; i++) {
+			pedregalX = scEntrada.nextInt();
+			pedregalY = scEntrada.nextInt();
+
+			if (pedregalX >= inferiorX && pedregalX < inferiorX + frente && pedregalY >= inferiorY
+					&& pedregalY < inferiorY + fondo) {
+				System.out.println("El pedregal (" + pedregalX + "," + pedregalY + ") está dentro de la casa");
+			}
+
+			if (inferiorX + frente > dimensionX || inferiorY + fondo > dimensionY) {
+				System.out.println("Casa fuera del terreno");
+			}
+		}
+
+		System.out.println("Salida correcta");
 		scEntrada.close();
 		scSalida.close();
 	}
